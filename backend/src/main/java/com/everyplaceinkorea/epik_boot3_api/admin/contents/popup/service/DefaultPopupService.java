@@ -57,7 +57,6 @@ public class DefaultPopupService implements PopupService {
         // 작성자 임시로 값 담아주기
         popupRequestDto.setWriter(1L);
         popupRequestDto.setType("팝업");
-        //
 
         // 멤버 외래키
         Member member = memberRepository.findById(popupRequestDto.getWriter()).orElseThrow();
@@ -105,38 +104,22 @@ public class DefaultPopupService implements PopupService {
                     }
                 }
 
-                String fullPath = folder.getAbsolutePath() + "/" + savedFileName;
+                String fullPath = folder.getAbsolutePath() + File.separator + savedFileName;
                 try {
                     file.transferTo(new File(fullPath));
-//                    Thread.sleep(3000);
                 } catch (IOException e) {
                     log.info(e.getMessage());
-//                    throw new IllegalArgumentException("여기서 에러가 나는건가???");
                 }
 
                 PopupImageDto imageDto = PopupImageDto.builder()
-//                        .imgPath(savePath)
                         .imgOrder(++orderIndex)
                         .imgSavedName(savedFileName)
                         .build();
 
 
                 PopupImage popupImage = modelMapper.map(imageDto, PopupImage.class);
-//                popupImage.addPopup(savedPopup);
                 popupImage.setPopup(savedPopup);
-//                popupImage.getPopup().setId(savedPopup.getId());
-                System.out.println("========== popupImage ========");
-                System.out.println(popupImage);
                 popupImageRepository.save(popupImage);
-
-//                Popup testPopup = new Popup();
-//                testPopup.setId(33L);
-//                PopupImage testImage = PopupImage.builder()
-//                        .popup(testPopup)
-//                        .imgSavedName("test")
-//                        .imgOrder(1)
-//                        .build();
-//                popupImageRepository.save(testImage);
 
                 log.info("첨부파일 데이터베이스에 저장할 이름 savedFieName: {}", savedFileName);
                 log.info("첨부파일 folder: {}", folder.getAbsolutePath());
@@ -147,62 +130,40 @@ public class DefaultPopupService implements PopupService {
         }
 
         // fileNames에서 뽑아서 업로드 폴더로 옮겨주기
-        String[] fileNames = popupRequestDto.getFileNames();
-        for (String fileName : fileNames) {
-            log.info("#fileName: {}", fileName);
-            // ### 현재 임시폴더에 있는 이미지 의 경로생성하기 ###
-            // C:\Users\yunkk\Desktop\epik-full\epik\backend\src\main\webapp\image\tmp\musical
-            Path folderPath = Paths.get(System.getProperty("user.dir") + File.separator + tmpPath + File.separator + UploadFolderType.POPUP.getFolderName());
-            log.info("folderPath ={} ",folderPath);
-            // C:\Users\yunkk\Desktop\epik-full\epik\backend\src\main\webapp\image\tmp\musical\fe0e5a9fc11a45f4aa3b73ae2a9f0816.jpg
-            String fullPath = System.getProperty("user.dir") + File.separator + tmpPath + File.separator + UploadFolderType.POPUP.getFolderName() + File.separator + fileName;
-            log.info("fullPath ={} ",fullPath);
-            Path sourcePath = Paths.get(fullPath);
-            log.info("sourcePath ={} ",sourcePath);
-
-            Path targetpath = Paths.get(System.getProperty("user.dir") + File.separator + uploadPath + File.separator + UploadFolderType.POPUP.getFolderName() + File.separator + fileName);
-            log.info("targetpath ={} ",targetpath);
-
-            if (Files.exists(sourcePath)) {
-                log.info("파일명 : {}이 임시폴더에 존재합니다.", fileName);
-                // 존재한다면? webapp/image/uplods/musical 로 옮기기
-                // 일단 폴더가 존재하는지 확인하고
-                if (!Files.exists(folderPath)) {
-                    Files.createDirectories(folderPath); // 상위 폴더까지 모두 생성
-                }
-                // 이동할 파일의 현재 경로(sourceDir), 이동 후의 파일 경로 설정(targetDir)
-                Files.move(sourcePath, targetpath);
-            }
-
-        }
-        ///////////////////////////////////////////////////////////////////////////////////
-
-        log.info("저장된 팝업 식별 번호 ={}", savedPopup.getId());
-
-        // 변환시 필요한 데이터를 넘김(요청 데이터가 들어간 requestDTO와 외래키로 가지고 있는 popup_id 필드에 popup entity를 넣어줘야하기때문에 함께 넘김.
-//        List<PopupTag> popupTags = saveTags(popupRequestDto.getTags(), savedPopup);
-//        List<PopupImage> popupImages = savePopup(popupImageDtos, savedPopup);
-//        // 반환받은 entity popupTicketPrices, popupTicketOffices를 List에 담아 saveAll메서드를 통해 db에 한번에 저장하기.
-//        List<PopupTag> savedPopupTags = popupTagRepository.saveAll(popupTags);
-//        List<PopupImage> savedPopupImage = popupImageRepository.saveAll(popupImages);
-//        // 이제 등록된 데이터를 dto로 반환하기.
-//        PopupResponseDto responseDto = modelMapper.map(savedPopup, PopupResponseDto.class);
-//        responseDto.setWriter(member.getUsername());
+//        String[] fileNames = popupRequestDto.getFileNames();
+//        for (String fileName : fileNames) {
+//            log.info("#fileName: {}", fileName);
+//            // ### 현재 임시폴더에 있는 이미지 의 경로생성하기 ###
+//            // C:\Users\yunkk\Desktop\epik-full\epik\backend\src\main\webapp\image\tmp\musical
+//            Path folderPath = Paths.get(System.getProperty("user.dir") + File.separator + tmpPath + File.separator + UploadFolderType.POPUP.getFolderName());
+//            log.info("folderPath ={} ",folderPath);
+//            // C:\Users\yunkk\Desktop\epik-full\epik\backend\src\main\webapp\image\tmp\musical\fe0e5a9fc11a45f4aa3b73ae2a9f0816.jpg
+//            String fullPath = System.getProperty("user.dir") + File.separator + tmpPath + File.separator + UploadFolderType.POPUP.getFolderName() + File.separator + fileName;
+//            log.info("fullPath ={} ",fullPath);
+//            Path sourcePath = Paths.get(fullPath);
+//            log.info("sourcePath ={} ",sourcePath);
 //
-//        List<PopupTagDto> tagsDtos = savedPopupTags
-//                .stream()
-//                .map(popupTag -> modelMapper.map(popupTag, PopupTagDto.class))
-//                .toList();
-//        responseDto.setTags(tagsDtos);
+//            Path targetpath = Paths.get(System.getProperty("user.dir") + File.separator + uploadPath + File.separator + UploadFolderType.POPUP.getFolderName() + File.separator + fileName);
+//            log.info("targetpath ={} ",targetpath);
 //
-//        saveTags(popupRequestDto.getTags(), savedPopup);
+//            if (Files.exists(sourcePath)) {
+//                log.info("파일명 : {}이 임시폴더에 존재합니다.", fileName);
+//                // 존재한다면? webapp/image/uplods/musical 로 옮기기
+//                // 일단 폴더가 존재하는지 확인하고
+//                if (!Files.exists(folderPath)) {
+//                    Files.createDirectories(folderPath); // 상위 폴더까지 모두 생성
+//                }
+//                // 이동할 파일의 현재 경로(sourceDir), 이동 후의 파일 경로 설정(targetDir)
+////                Files.move(sourcePath, targetpath);
+//            }
+//
+//        }
+//
+//        log.info("저장된 팝업 식별 번호 ={}", savedPopup.getId());
 
-
-        // entity -> dto
-        return null;
+        return savedPopup.getId();
     }
 
-    // ####################################################################################################
 
     // 팝업 삭제
     @Override

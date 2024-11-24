@@ -1,10 +1,11 @@
 package com.everyplaceinkorea.epik_boot3_api.admin.contents.exhibition.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.stereotype.Service;
 
-@Data
+
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExhibitionTicketOfficeDto {

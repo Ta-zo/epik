@@ -12,5 +12,4 @@ public class MusicalTicketOfficeDto {
     private Long id;
     private String name;
     private String link;
-    private Long musicalId;
 }

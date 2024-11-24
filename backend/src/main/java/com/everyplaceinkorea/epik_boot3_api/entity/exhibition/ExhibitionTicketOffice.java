@@ -2,13 +2,14 @@ package com.everyplaceinkorea.epik_boot3_api.entity.exhibition;
 
 import com.everyplaceinkorea.epik_boot3_api.entity.concert.Concert;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-@Table(name = "exhibition_ticket_office")
 public class ExhibitionTicketOffice {
 
   @Id

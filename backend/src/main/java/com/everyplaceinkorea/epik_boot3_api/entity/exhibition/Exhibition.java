@@ -1,7 +1,5 @@
 package com.everyplaceinkorea.epik_boot3_api.entity.exhibition;
 
-import com.everyplaceinkorea.epik_boot3_api.admin.contents.concert.dto.ConcertUploadResultDto;
-import com.everyplaceinkorea.epik_boot3_api.admin.contents.exhibition.dto.ExhibitionUploadResultDto;
 import com.everyplaceinkorea.epik_boot3_api.entity.Region;
 import com.everyplaceinkorea.epik_boot3_api.entity.member.Member;
 import com.everyplaceinkorea.epik_boot3_api.entity.musical.Status;
@@ -81,11 +79,6 @@ public class Exhibition {
   @JoinColumn(name = "region_id")
   private Region region;
 
-
-  public void addImage(ExhibitionUploadResultDto uploadResult) {
-    this.filePath = uploadResult.getFilePath();
-    this.fileSavedName = uploadResult.getFileSavedName();
-  }
 
 
 }

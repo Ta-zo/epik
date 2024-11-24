@@ -6,27 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FeedResponseDto {
-  // 작성자
+public class FeedCommentDto {
+  // 댓글 작성자
   private String writer;
-  // 등록일
+  // 댓글 작성일
   private LocalDateTime writeDate;
-  // 좋아요 수
-  private Integer likeCount;
-  // 댓글 수
-  private Integer commentCount;
-  // 내용
+  // 댓글 내용
   private String content;
-  // 댓글
-  private List<FeedCommentDto> comments;
-  // 이미지
-  private String[] imageSaveName;
-
 }
-

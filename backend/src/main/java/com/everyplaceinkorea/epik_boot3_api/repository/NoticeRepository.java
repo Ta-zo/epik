@@ -1,4 +1,4 @@
-package com.everyplaceinkorea.epik_boot3_api.admin.notice.repository;
+package com.everyplaceinkorea.epik_boot3_api.repository;
 
 import com.everyplaceinkorea.epik_boot3_api.entity.Notice;
 import org.springframework.data.domain.Page;

@@ -36,6 +36,9 @@ public class Feed {
   @Column(name = "like_count")
   private Integer likeCount;
 
+  @Column(name = "comment_count")
+  private Integer commentCount;
+
   @Column(name = "is_visible")
   private Byte isVisible;
 
@@ -51,7 +54,7 @@ public class Feed {
   private Status status = Status.ACTIVE; // POPUP ENUM에 위치
 
   public void delete() {
-      this.status = Status.DELETE;
+    this.status = Status.DELETE;
   }
 
   // 피드 수정
@@ -67,5 +70,13 @@ public class Feed {
 
   public void likeCountDown() {
     this.likeCount--;
+  }
+
+  public void commentCountUp() {
+    this.commentCount++;
+  }
+
+  public void commentCountDown() {
+    this.commentCount--;
   }
 }

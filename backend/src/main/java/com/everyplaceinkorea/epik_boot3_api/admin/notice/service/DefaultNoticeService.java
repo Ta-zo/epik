@@ -4,7 +4,7 @@ import com.everyplaceinkorea.epik_boot3_api.admin.notice.dto.NoticeResponseDto;
 import com.everyplaceinkorea.epik_boot3_api.admin.notice.dto.NoticeRequestDto;
 import com.everyplaceinkorea.epik_boot3_api.admin.notice.dto.NoticeListDto;
 import com.everyplaceinkorea.epik_boot3_api.admin.notice.dto.NoticeSearchDto;
-import com.everyplaceinkorea.epik_boot3_api.admin.notice.repository.NoticeRepository;
+import com.everyplaceinkorea.epik_boot3_api.repository.NoticeRepository;
 import com.everyplaceinkorea.epik_boot3_api.entity.Notice;
 import com.everyplaceinkorea.epik_boot3_api.entity.member.Member;
 import com.everyplaceinkorea.epik_boot3_api.repository.Member.MemberRepository;

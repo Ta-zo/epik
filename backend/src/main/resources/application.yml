@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: epik-boot3-api
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 795859274806-ugdbg4hupr778bcrq44mv5sggolium6u.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: epik
+    password: 111
+    url: jdbc:mariadb://hi.newlecture.com:3306/epikdb
+  jpa:
+    show-sql: true #로그에 하이버네이트가 생성한 쿼리문을 출력하는 옵션
+    hibernate:
+      ddl-auto: none #테이블 구조 정의 #대체로 none을 사용
+    properties:
+      hibernate:
+        format_sql: true #쿼리문을 보기 좋게 포매팅
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 30MB
+      location: C:\\upload
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: eun00864@gmail.com # 앱 비밀번호 발급받은 google 계정
+    password: dhbtvdxabizvdrst # 발급받은 앱 비밀번호 (16자리 입니다.) -> 복붙
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+  # 정적리소스 접근 경로 설정
+  web:
+    resources:
+      static-locations: file:../uploads/
+
+epik:
+  jwt:
+    secret: "aBfnSNvv5P2JlSpFLxtPvsvSGI0/Rs0H9uqW3JwQ89GoGbGeCI41MD7PwvF1CyOmqH1+FchjH+pd0vpjtnr0Pg=="
+
+server:
+  servlet:
+    context-path: /api/v1
+  max-http-request-header-size: 8192
+  port: 8081
+
+file:
+  tmp-dir: uploads\temp
+  upload-dir: uploads\images

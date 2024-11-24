@@ -47,7 +47,9 @@ public class DefaultPopupService implements PopupService {
                 .getContent()
                 .stream()
                 .map(Popup ->{
+                    List<PopupImage> allByPopupId = popupImageRepository.findAllByPopupId(Popup.getId());
                     PopupResponseDto responseDto = modelMapper.map(Popup, PopupResponseDto.class);
+                    responseDto.setImgSavedName(allByPopupId.get(0).getImgSavedName());
                     System.out.println("Mapped DTO: " + responseDto); // 변환된 DTO 출력
                     return responseDto;
                 })
@@ -103,7 +105,9 @@ public class DefaultPopupService implements PopupService {
                 .getContent()
                 .stream()
                 .map(Popup -> {
+                    List<PopupImage> allByPopupId = popupImageRepository.findAllByPopupId(Popup.getId());
                     PopupResponseDto responseDto = modelMapper.map(Popup, PopupResponseDto.class);
+                    responseDto.setImgSavedName(allByPopupId.get(0).getImgSavedName());
                     System.out.println("Mapped DTO: " + responseDto); // 변환된 DTO 출력
                     return responseDto;
                 })

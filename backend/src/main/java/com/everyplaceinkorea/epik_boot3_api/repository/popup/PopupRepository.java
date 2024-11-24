@@ -30,10 +30,18 @@ public interface PopupRepository extends JpaRepository<Popup, Long>{
                             Pageable pageable); //페이징과 정렬기능을 쉽게 구현하기 위해(대규모 데이터 효율적
 
     // 이주의 신규 팝업 - 카테고리별
-    @Query("SELECT p FROM Popup p " + "JOIN p.popupCategory c " + "WHERE c.id = :categoryId " + "AND p.startDate = :startDate")
+//    @Query("SELECT p FROM Popup p " + "JOIN p.popupCategory c " + "WHERE c.id = :categoryId " + "AND p.startDate = :startDate")
+//    Page<Popup> findByCategoryAndStartDate(@Param("categoryId") Long categoryId,
+//                                           @Param("startDate") LocalDate startDate,
+//                                           Pageable pageable);
+
+    @Query("SELECT p FROM Popup p " +
+            "JOIN p.popupCategory c " +
+            "WHERE c.id = :categoryId " +
+            "AND :currentDate BETWEEN p.startDate AND p.endDate")
     Page<Popup> findByCategoryAndStartDate(@Param("categoryId") Long categoryId,
-                                           @Param("startDate") LocalDate startDate,
-                                           Pageable pageable);
+                                             @Param("currentDate") LocalDate currentDate,
+                                             Pageable pageable);
 
     // 이주의 신규 팝업 - 지역별
     @Query("SELECT p FROM Popup p " + "JOIN p.popupRegion c " + "WHERE c.id = :regionId " + "AND p.startDate = :startDate")
@@ -51,10 +59,10 @@ public interface PopupRepository extends JpaRepository<Popup, Long>{
     @Query("SELECT p FROM Popup p " +
             "WHERE p.popupCategory.id = :categoryId " +
             "AND p.popupRegion.id = :regionId " +
-            "AND p.startDate = :startDate")
+            "AND :currentDate BETWEEN p.startDate AND p.endDate")
     Page<Popup> findByCategoryAndRegionAndStartDate(@Param("categoryId") Long categoryId,
                                                     @Param("regionId") Long regionId,
-                                                    @Param("startDate") LocalDate startDate,
+                                                    @Param("currentDate") LocalDate currentDate,
                                                     Pageable pageable);
 
 

@@ -57,7 +57,6 @@ public class PopupController {
 
         return ResponseEntity.status(OK)
                 .body(popupService.getPopupsFindByCategoryAndRegionAndStartDate(categoryId, regionId, page));
-
     }
 
     // 랜덤 이미지 조회

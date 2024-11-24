@@ -4,7 +4,10 @@ import com.everyplaceinkorea.epik_boot3_api.anonymous.find.id.dto.IdCheckRequest
 import com.everyplaceinkorea.epik_boot3_api.anonymous.find.id.service.IdCheckService;
 import com.everyplaceinkorea.epik_boot3_api.anonymous.signup.dto.EmailCheckDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 

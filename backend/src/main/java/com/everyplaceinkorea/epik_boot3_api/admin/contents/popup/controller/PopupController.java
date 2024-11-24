@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -30,18 +29,13 @@ public class PopupController {
     public ResponseEntity<Long> create(PopupRequestDto popupRequestDto,
                                                    MultipartFile[] files) throws IOException {
 
-
         log.info("popupRequestDto : {}", popupRequestDto);
-
         // 파일 리스트 순회
         for (MultipartFile file : files) {
             // 파일명 출력
             String fileName = file.getOriginalFilename();
             log.info("fileName : {}", fileName);
         }
-
-        popupService.create(popupRequestDto, files);
-
         return ResponseEntity.status(OK)
                 .body(popupService.create(popupRequestDto, files));
     }

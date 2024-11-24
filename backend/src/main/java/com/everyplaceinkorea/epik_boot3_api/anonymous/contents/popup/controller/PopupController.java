@@ -60,7 +60,6 @@ public class PopupController {
 
     }
 
-
     // 랜덤 이미지 조회
     ///api/v1/popup/category/random
     @GetMapping("random")

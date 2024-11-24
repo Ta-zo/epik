@@ -21,6 +21,8 @@ public class PopupResponseDto {
     private String status;
     //제목
     private String title;
+
+    private String content;
     //시작일
     private LocalDate startDate;
     //종료일
@@ -33,4 +35,10 @@ public class PopupResponseDto {
     private String[] tags;
     //이미지
     private String[] saveImageNames;
+
+    private String imgSavedName;
+
+    private String snsLink;
+
+    private String webLink;
 }

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -121,10 +122,14 @@ public class DefaultPopupService implements PopupService {
         List<PopupResponseDto> responseDtos = popups
                 .stream()
                 .map(Popup -> {
+                    List<PopupImage> allByPopupId = popupImageRepository.findAllByPopupId(Popup.getId());
                     PopupResponseDto responseDto = modelMapper.map(Popup, PopupResponseDto.class);
+                    responseDto.setImgSavedName(allByPopupId.get(0).getImgSavedName());
                     return responseDto;
                 })
                 .toList();
+
+
 
         return responseDtos;
     }

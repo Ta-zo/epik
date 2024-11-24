@@ -149,6 +149,7 @@ public class DefaultSignupService implements SignupService {
 //        member.setJoinDate(new Timestamp(System.currentTimeMillis()));va
         member.setJoinDate(LocalDate.now());
         member.setType((byte) 1);
+        member.setProfileImg("basic.png");
 
         //비밀번호 인코딩 //if = pw ===null, if문 추가 필요
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

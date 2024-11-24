@@ -23,7 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -56,22 +55,6 @@ public class DefaultExhibitionService implements ExhibitionService {
   @Value("${file.upload-dir}")
   private String uploadPath;
 
-//  @Override
-//  public ConcertListDto getList() {
-//    // 게시물 목록 ID 내림차순으로 정렬
-//    List<Concert> concerts = concertRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-//
-//    long totalCount = concertRepository.count();
-//    List<ConcertDto> concertDtos = concerts.stream().map(concert -> {
-//      ConcertDto concertDto = modelMapper.map(concert, ConcertDto.class);
-//      concertDto.setWriter(concert.getMember().getNickname());
-//
-//      return concertDto;
-//    }).collect(Collectors.toList());
-//
-//    return new ConcertListDto(concertDtos, totalCount);
-//  }
-
   @Override
   public ExhibitionListDto getList(int page, String keyword, String searchType) {
 
@@ -95,7 +78,6 @@ public class DefaultExhibitionService implements ExhibitionService {
     boolean hasPrevPage = exhibitionPage.hasPrevious();
     boolean hasNextPage = exhibitionPage.hasNext();
 
-    // Concert Entity -> ConcertDto 매핑
     List<ExhibitionDto> exhibitionDtos = exhibitionPage.getContent() // 현재 페이지의 데이터 리스트
             .stream()
             .map(exhibition -> {
@@ -106,18 +88,6 @@ public class DefaultExhibitionService implements ExhibitionService {
               return exhibitionDto;
             }).toList();
 
-//    concertPage.getContent().stream().forEach(System.out::println);
-
-    // 페이지 번호가 null인 경우 기본값 1로 설정
-//    page = (page == null || page <= 0) ? 1 : page;
-
-    // 현재 페이지 기준으로 표시할 페이지 번호 목록 계산
-//    int offset = (pageNumber) % 5;
-//    int startPageNum = page - offset;
-//    List<Long> pages = new ArrayList<>();
-//    for(long i = startPageNum; i < Math.min(startPageNum + 5, totalPages + 1); i++) {
-//      pages.add(i);
-//    }
 
     // 페이지 목록 생성 - 현재 페이지를 기준으로 앞뒤 2개의 페이지를 표시하도록 범위 설정
     int currentPage = exhibitionPage.getNumber() + 1;
@@ -175,53 +145,55 @@ public class DefaultExhibitionService implements ExhibitionService {
 
   }
 
-  // 콘서트 컨텐츠 등록 - Concert Entity에 선언된 필드들에 값을 넣어 save
-  @Transactional
+//  @Transaactional
   @Override
-  public ExhibitionResponseDto create(ExhibitionRequestDto exhibitionRequestDto, MultipartFile files) throws IOException {
+  public ExhibitionResponseDto create(ExhibitionRequestDto requestDto, MultipartFile files) throws IOException {
+      // 인증이 안되니깐 일단 임시로 데이터 넣어놓기
+      requestDto.setWriter(1L);
+      requestDto.setRegion(1L);
+      //
 
-    // 인증이 안되니깐 일단 임시로 데이터 넣어놓기
-    exhibitionRequestDto.setWriter(1L);
-    exhibitionRequestDto.setRegion(1L);
-    //
+      String saveFileName = uploadFile(files);
 
-    ExhibitionUploadResultDto uploadResult = uploadFile(files);
-    if(uploadResult == null || uploadResult.getFilePath() == null) {
-      throw new IllegalArgumentException("FILE UPLOAD FAILED");
-    }
+      Member member = memberRepository.findById(requestDto.getWriter()).orElseThrow();
+      Region region = regionRepository.findById(requestDto.getRegion()).orElseThrow();
 
-    Member member = memberRepository.findById(exhibitionRequestDto.getWriter()).orElseThrow();
-    Region region = regionRepository.findById(exhibitionRequestDto.getRegion()).orElseThrow();
+      // Exhibition 엔티티 생성
+      Exhibition exhibition = modelMapper.map(requestDto, Exhibition.class);
 
-    Exhibition exhibition = modelMapper.map(exhibitionRequestDto, Exhibition.class);
+      exhibition.setMember(member);
+      exhibition.setRegion(region);
+      exhibition.setFileSavedName(saveFileName);
 
-    exhibition.setMember(member);
-    exhibition.setRegion(region);
-    exhibition.addImage(uploadResult);
+      // Exhibition을 저장하고, 그 결과를 savedExhibition에 담는다.
+      Exhibition savedExhibition = exhibitionRepository.save(exhibition);
 
+    // 저장된 Exhibition을 기반으로 TicketOffice와 TicketPrice 저장
+//      List<ExhibitionTicketOffice> exhibitionTicketOffices = saveTicketOffices(requestDto.getTicketOffices(), savedExhibition);
+//      List<ExhibitionTicketPrice> exhibitionTicketPrices = saveTicketPrices(requestDto.getTicketPrices(), savedExhibition);
+//
+//      // 외래 키 설정이 정상적으로 되었는지 확인 후 저장
+//      exhibitionTicketOfficeRepository.saveAll(exhibitionTicketOffices);
+//      exhibitionTicketPriceRepository.saveAll(exhibitionTicketPrices);
+//
+//      // 이미지 저장
+//      imageSave(requestDto, savedExhibition);
+//
+//      // 응답 DTO 생성
+//      ExhibitionResponseDto responseDto = modelMapper.map(savedExhibition, ExhibitionResponseDto.class);
+//      responseDto.setWriter(member.getNickname());
+//      responseDto.setSaveImageName(saveFileName);
+//
+//      responseDto.setTicketOffices(exhibitionTicketOffices.stream()
+//              .map(office -> modelMapper.map(office, ExhibitionTicketOfficeDto.class)).collect(Collectors.toList()));
+//
+//      responseDto.setTicketPrices(exhibitionTicketPrices.stream()
+//              .map(price -> modelMapper.map(price, ExhibitionTicketPriceDto.class)).collect(Collectors.toList()));
+//
+//      log.info("responseDto = {} ", responseDto.toString());
+//      return responseDto;
+    return null;
 
-    Exhibition savedExhibition = exhibitionRepository.save(exhibition);
-
-    List<ExhibitionTicketOffice> exhibitionTicketOffices = saveTicketOffices(exhibitionRequestDto.getExhibitionTicketOffices(), savedExhibition);
-    List<ExhibitionTicketPrice> exhibitionTicketPrices = saveTicketPrices(exhibitionRequestDto.getExhibitionTicketPrices(), savedExhibition);
-
-    exhibitionTicketPriceRepository.saveAll(exhibitionTicketPrices);
-    exhibitionTicketOfficeRepository.saveAll(exhibitionTicketOffices);
-
-    imageSave(exhibitionRequestDto, savedExhibition);
-
-    ExhibitionResponseDto responseDto = modelMapper.map(savedExhibition, ExhibitionResponseDto.class);
-    responseDto.setWriter(member.getNickname());
-    responseDto.setSaveImageName(uploadResult.getFileSavedName());
-
-    responseDto.setTicketOffices(exhibitionTicketOffices.stream()
-            .map(office -> modelMapper.map(office, ExhibitionTicketOfficeDto.class)).collect(Collectors.toList()));
-
-    responseDto.setTicketPrices(exhibitionTicketPrices.stream()
-            .map(price -> modelMapper.map(price, ExhibitionTicketPriceDto.class)).collect(Collectors.toList()));
-
-    log.info("responseDto = {} ", responseDto.toString());
-    return responseDto;
   }
 
   private void imageSave(ExhibitionRequestDto exhibitionRequestDto, Exhibition exhibition) throws IOException {
@@ -287,7 +259,7 @@ public class DefaultExhibitionService implements ExhibitionService {
   }
 
   // 콘서트 이미지 업로드
-  private ExhibitionUploadResultDto uploadFile(MultipartFile file) throws IOException {
+  private String uploadFile(MultipartFile file) throws IOException {
     if (file != null && !file.isEmpty()) {
       String originalFilename = file.getOriginalFilename(); // 실제 파일명
       String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
@@ -307,86 +279,31 @@ public class DefaultExhibitionService implements ExhibitionService {
         throw new RuntimeException(e);
       }
 
-      return new ExhibitionUploadResultDto(savedFileName, fullPath);
+      return savedFileName;
     } else {
       return null; // 추후 빈파일이 넘어왔을 경우 예외 처리 필요
     }
   }
 
-
-//  // 이미지 업로드 경로 설정
-//  private String makeFolder() {
-//    Path location = Paths.get(System.getProperty("user.dir"), "uploads", "concert");
-//    String str = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-//    String folderPath = str.replace("/", File.separator);
-//    System.out.println("folderPath: " + folderPath);
-//
-//    File uploadPathFolder = new File(String.valueOf(location), folderPath);
-//    System.out.println("업로드 경로:" + uploadPathFolder.toPath());
-//
-//    if(!uploadPathFolder.exists()) {
-//      uploadPathFolder.mkdirs();
-//    }
-//
-//    return uploadPathFolder.toPath().toString();
-//  }
-
-  // TicketPricesDto -> Entity List로 반환
-//  private List<ConcertTicketPrice> saveTicketPrices(List<ConcertTicketPriceDto> ticketPrices, Concert concert) {
-//    List<ConcertTicketPrice> ticketPriceEntities = new ArrayList<>();
-//
-//    for(ConcertTicketPriceDto ticketPriceDto : ticketPrices) {
-//      ConcertTicketPrice ticketPrice = modelMapper.map(ticketPriceDto, ConcertTicketPrice.class);
-//      ticketPrice.setConcert(concert);
-//
-//      ticketPriceEntities.add(ticketPrice);
-//    }
-//
-//    return ticketPriceEntities;
-//  }
-
-
-//  private List<ConcertTicketOffice> saveTicketOffices(List<ConcertTicketOfficeDto> ticketOffices, Concert concert) {
-//
-//    List<ConcertTicketOffice> ticketOfficeEntities = new ArrayList<>();
-//
-//    for(ConcertTicketOfficeDto ticketOfficeDto : ticketOffices) {
-//      ConcertTicketOffice ticketOffice = modelMapper.map(ticketOfficeDto, ConcertTicketOffice.class);
-//
-//      ticketOffice.setConcert(concert);
-//      ticketOfficeEntities.add(ticketOffice);
-//    }
-//
-//    return ticketOfficeEntities;
-//  }
-
   private List<ExhibitionTicketOffice> saveTicketOffices(List<ExhibitionTicketOfficeDto> ticketOffices, Exhibition savedExhibition) {
-    if(ticketOffices == null) {
-      return new ArrayList<>();
+    List<ExhibitionTicketOffice> exhibitionTicketOffices = new ArrayList<>();
+    for (ExhibitionTicketOfficeDto dto : ticketOffices) {
+        ExhibitionTicketOffice ticketOffice = modelMapper.map(dto, ExhibitionTicketOffice.class);
+        ticketOffice.setExhibition(savedExhibition);
+        exhibitionTicketOffices.add(ticketOffice);
     }
 
-    return ticketOffices.stream()
-            .map(dto -> {
-              ExhibitionTicketOffice office = new ExhibitionTicketOffice();
-              office.setName(dto.getName());
-              office.setLink(dto.getLink());
-              office.setExhibition(savedExhibition);
-              return office;
-            }).collect(Collectors.toList());
+    return exhibitionTicketOffices;
   }
 
   private List<ExhibitionTicketPrice> saveTicketPrices(List<ExhibitionTicketPriceDto> ticketPrices, Exhibition savedExhibition) {
-    if(ticketPrices == null) {
-      return new ArrayList<>();
-    }
+      List<ExhibitionTicketPrice> ticketPricesEntities = new ArrayList<>();
+      for (ExhibitionTicketPriceDto dto : ticketPrices) {
+          ExhibitionTicketPrice ticketPrice = modelMapper.map(dto, ExhibitionTicketPrice.class);
+          ticketPrice.setExhibition(savedExhibition);
+          ticketPricesEntities.add(ticketPrice);
+      }
 
-    return ticketPrices.stream()
-            .map(dto -> {
-              ExhibitionTicketPrice price = new ExhibitionTicketPrice();
-              price.setSeat(dto.getSeat());
-              price.setPrice(dto.getPrice());
-              price.setExhibition(savedExhibition);
-              return price;
-            }).collect(Collectors.toList());
+      return ticketPricesEntities;
   }
 }

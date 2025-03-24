@@ -13,17 +13,28 @@ spring:
               - profile
 
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    username: epik
-    password: 111
-    url: jdbc:mariadb://hi.newlecture.com:3306/epikdb
+    url: jdbc:h2:file:./data/testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
   jpa:
-    show-sql: true #로그에 하이버네이트가 생성한 쿼리문을 출력하는 옵션
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: none #테이블 구조 정의 #대체로 none을 사용
+      ddl-auto: update # 테이블 자동 생성
     properties:
       hibernate:
-        format_sql: true #쿼리문을 보기 좋게 포매팅
+        format_sql: true # SQL 보기 좋게 포맷팅
+        show_sql: true # 로그에 하이버네이트가 생성한 쿼리문을 출력하는 옵션
+
+
+  h2:
+    console:
+      enabled: true # H2 웹 콘솔 활성화
+      path: /h2-console # H2 콘솔 접속 경로 설정
+      settings:
+        web-allow-others: true # 외부 접속 허용
+        trace: false
 
   servlet:
     multipart:

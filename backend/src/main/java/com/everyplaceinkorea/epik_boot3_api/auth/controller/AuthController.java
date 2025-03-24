@@ -77,6 +77,7 @@ public class AuthController {
             // 쿠키를 응답에 추가
             response.addCookie(cookie);
 
+
             // JWT 토큰 반환
             AuthResponseDto responseDto = AuthResponseDto
                     .builder()
